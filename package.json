@@ -1,0 +1,32 @@
+{
+  "name": "@ostro/logger",
+  "version": "0.0.0-alpha.0",
+  "description": "Ostrojs Logger module",
+  "engines": {
+    "node": ">= 12.0"
+  },
+  "main": "LogManager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@ostro/support": "^0.0.0-alpha.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  },
+  "keywords": [
+    "logger",
+    "logging",
+    "log"
+  ],
+  "author": "amar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ostrojs/logger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ostrojs/logger/issues"
+  },
+  "homepage": "https://github.com/ostrojs/logger#readme"
+}
