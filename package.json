@@ -1,19 +1,20 @@
 {
   "name": "@ostro/logger",
   "version": "0.0.0-alpha.0",
-  "description": "Ostrojs Logger module",
-  "engines": {
-    "node": ">= 12.0"
-  },
+  "description": "Logger module for OstroJS",
   "main": "LogManager.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@ostro/support": "^0.0.0-alpha.0",
+    "@ostro/support": "^0.0.0-alpha",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "engineStrict": true,
   "keywords": [
     "logger",
     "logging",
