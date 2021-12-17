@@ -1,39 +1,21 @@
 require('@ostro/support/helpers')
+const Manager = require('@ostro/support/manager')
 const LineFormatter = require('./LineFormatter')
 const Logger = require('./Logger')
 const InvalidArgumentException = require('./InvalidArgumentException')
-require('@ostro/support/helpers')
 const { Winston, transports, format } = require('./winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
-const { Macroable } = require('@ostro/support/macro')
 const fs = require('fs')
 const { Console } = require('console');
-const kApp = Symbol('app')
-const kChannels = Symbol('channels')
-const kCustomCreators = Symbol('customCreators')
-class LogManager extends Macroable {
 
-    constructor($app) {
-        super()
-        Object.defineProperties(this, {
-            [kApp]: {
-                value: $app,
-            },
-            [kChannels]: {
-                value: Object.create(null),
-                writable: true,
-            },
-            [kCustomCreators]: {
-                value: Object.create(null),
-                writable: true,
-            }
-        })
-    }
+class LogManager extends Manager {
+
+    $type = 'logging';
 
     stack($channels, $channel = null) {
         return new Logger(
             this.createStackDriver({
-                channels: this[kChannels]
+                channels: this.$drivers
             }),
         );
     }
@@ -47,16 +29,16 @@ class LogManager extends Macroable {
     }
 
     get($name) {
-        return this[kChannels][$name] || (this[kChannels][$name] = new Logger(this.resolve($name), this.configurationFor($name)))
+        return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)))
 
     }
 
     createEmergencyLogger() {
         return new Logger(new Winston('Ostro', this.prepareHandlers([new StreamHandler(
-            this[kApp].storagePath() + '/logs/Ostro.log', this.level({
+            this.$container.storagePath() + '/logs/Ostro.log', this.level({
                 'level': 'debug'
             })
-        )])), this[kApp]['events']);
+        )])), this.$container['events']);
     }
 
     resolve($name) {
@@ -64,22 +46,13 @@ class LogManager extends Macroable {
         if (!($config)) {
             throw new InvalidArgumentException("Log [{" + $name + "}] is not defined.");
         }
-        if ((this[kCustomCreators][$config['driver']])) {
-            return this.callCustomCreator($config);
-        }
-        let $driverMethod = 'create' + ($config['driver'].ucfirst()) + 'Driver';
-        if (this[$driverMethod]) {
-            return this[$driverMethod]($config);
-        }
-        throw new InvalidArgumentException(`Driver [{${$config['driver']}}] is not supported.`);
+        return super.resolve($name, $config)
     }
 
-    callCustomCreator($config) {
-        return this[kCustomCreators][$config['driver']](this[kApp], $config);
-    }
 
     createCustomDriver($config) {
-        $factory = is_callable($via = $config['via']) ? $via : this[kApp].make($via);
+        let $via = $config['via']
+        let $factory = is_callable($via) ? $via : this.$container.make($via);
         return $factory($config);
     }
 
@@ -144,7 +117,7 @@ class LogManager extends Macroable {
         if (!($config['formatter'])) {
             $handler.format = (this.formatter());
         } else if ($config['formatter'] !== 'default') {
-            $handler.format = (this[kApp].make($config['formatter'], $config['formatter_with'] || null));
+            $handler.format = (this.$container.make($config['formatter'], $config['formatter_with'] || null));
         }
 
         return $handler;
@@ -154,32 +127,12 @@ class LogManager extends Macroable {
         return new LineFormatter(config);
     }
 
-    configurationFor($name) {
-        return this[kApp]['config']['logging']['channels'][$name];
-    }
-
-    getDefaultDriver() {
-        return this[kApp]['config']['logging']['default'];
-    }
-
-    setDefaultDriver($name) {
-        this[kApp]['config']['logging']['default'] = $name;
-    }
-
-    extend($driver, $callback) {
-        this[kCustomCreators][$driver] = $callback.bind(this);
-        return this;
+    configurationFor(name) {
+        return super.getConfig(`channels.${name}`);
     }
 
     report($exception) {
         this.driver().error($exception)
-    }
-    getConfig($name) {
-        this[kApp]['config']['logging'][$name]
-    }
-
-    __call(target, method, args) {
-        return target.driver()[method](...args)
     }
 }
 
