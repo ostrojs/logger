@@ -30,7 +30,6 @@ class LogManager extends Manager {
 
     get($name) {
         return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)))
-
     }
 
     createEmergencyLogger() {
