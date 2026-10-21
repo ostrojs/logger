@@ -1,38 +1,59 @@
 {
-  "name": "@ostro/logger",
-  "version": "1.0.0",
-  "description": "Logger module for OstroJS",
-  "main": "LogManager.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@ostro/support": "^1.0.2",
-    "@ostro/contracts": "^1.0.0",
-    "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
-  },
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "engineStrict": true,
-  "keywords": [
-    "logger",
-    "logging",
-    "log",
-    "nodejs logger",
-    "server logger",
-    "ostrojs logger"
-
-  ],
-  "author": "amar",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ostrojs/logger.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ostrojs/logger/issues"
-  },
-  "homepage": "https://github.com/ostrojs/logger#readme"
+    "name": "@ostro/logger",
+    "version": "2.0.0-alpha.1",
+    "description": "Logger module for OstroJS",
+    "main": "build/LogManager.js",
+    "types": "build/LogManager.d.ts",
+    "files": [
+        "build"
+    ],
+    "exports": {
+        ".": {
+            "types": "./build/LogManager.d.ts",
+            "default": "./build/LogManager.js"
+        },
+        "./*": {
+            "types": "./build/*.d.ts",
+            "default": "./build/*.js"
+        }
+    },
+    "scripts": {
+        "build": "npx tsc -p tsconfig.build.json && node scripts/build.js",
+        "prepublishOnly": "npm run build",
+        "test": "npx c8 npx jest",
+        "clean": "rm -rf build coverage"
+    },
+    "dependencies": {
+        "@ostro/contracts": "^2.0.0-alpha.1",
+        "@ostro/support": "^2.0.0-alpha.1",
+        "winston": "^3.17.0",
+        "winston-daily-rotate-file": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "engineStrict": true,
+    "keywords": [
+        "logger",
+        "logging",
+        "log",
+        "nodejs logger",
+        "server logger",
+        "ostrojs logger"
+    ],
+    "author": "amar",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ostrojs/logger.git"
+    },
+    "bugs": {
+        "url": "https://github.com/ostrojs/logger/issues"
+    },
+    "homepage": "https://github.com/ostrojs/logger#readme",
+    "devDependencies": {
+        "jest": "^30.5.1",
+        "typescript": "^5.8.0",
+        "@types/node": "^22.0.0"
+    }
 }
