@@ -1,4 +1,3 @@
-import '@ostro/support/helpers';
 import Manager from '@ostro/support/manager';
 import LineFormatter from './LineFormatter';
 import Logger from './Logger';

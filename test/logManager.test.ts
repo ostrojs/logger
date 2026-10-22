@@ -3,8 +3,6 @@ import fs from 'fs';
 import os from 'os';
 import { format } from 'winston';
 
-import '@ostro/support/helpers';
-
 import InvalidArgumentException from '../src/InvalidArgumentException';
 import LineFormatter from '../src/LineFormatter';
 import Logger from '../src/Logger';
