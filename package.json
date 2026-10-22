@@ -1,19 +1,19 @@
 {
     "name": "@ostro/logger",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "description": "Logger module for OstroJS",
     "main": "build/LogManager.js",
-    "types": "build/LogManager.d.ts",
+    "types": "./build/types/LogManager.d.ts",
     "files": [
         "build"
     ],
     "exports": {
         ".": {
-            "types": "./build/LogManager.d.ts",
+            "types": "./build/types/LogManager.d.ts",
             "default": "./build/LogManager.js"
         },
         "./*": {
-            "types": "./build/*.d.ts",
+            "types": "./build/types/*.d.ts",
             "default": "./build/*.js"
         }
     },
@@ -24,8 +24,8 @@
         "clean": "rm -rf build coverage"
     },
     "dependencies": {
-        "@ostro/contracts": "^2.0.0-alpha.1",
-        "@ostro/support": "^2.0.0-alpha.1",
+        "@ostro/contracts": "^2.0.0-alpha.2",
+        "@ostro/support": "^2.0.0-alpha.2",
         "winston": "^3.17.0",
         "winston-daily-rotate-file": "^5.0.0"
     },
