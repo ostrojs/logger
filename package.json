@@ -1,6 +1,6 @@
 {
     "name": "@ostro/logger",
-    "version": "2.0.0-alpha.7",
+    "version": "2.0.0-alpha.8",
     "description": "Logger module for OstroJS",
     "main": "LogManager.js",
     "types": ".types/LogManager.d.ts",
@@ -22,8 +22,8 @@
         "lint:check": "tsc --noEmit -p tsconfig.build.json"
     },
     "dependencies": {
-        "@ostro/contracts": "^2.0.0-alpha.8",
-        "@ostro/support": "^2.0.0-alpha.9",
+        "@ostro/contracts": "^2.0.0-alpha.9",
+        "@ostro/support": "^2.0.0-alpha.10",
         "winston": "^3.19.0",
         "winston-daily-rotate-file": "^5.0.0"
     },
@@ -50,7 +50,7 @@
     },
     "homepage": "https://github.com/ostrojs/logger#readme",
     "devDependencies": {
-        "@ostro/builder": "^2.0.0-alpha.6",
+        "@ostro/builder": "^2.0.0-alpha.7",
         "@types/jest": "^30.0.0",
         "@types/node": "^22.0.0",
         "c8": "^10.1.3",
