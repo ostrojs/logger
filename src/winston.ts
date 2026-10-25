@@ -1,10 +1,8 @@
 import { createLogger, transports, format } from 'winston';
-import type { Logger as WinstonLogger } from 'winston';
-
-const kLogger: unique symbol = Symbol('logger');
+import type { Logger as WinstonLogger, transport as WinstonTransport } from 'winston';
 
 class Winston {
-    [kLogger]: WinstonLogger;
+    #logger: WinstonLogger;
 
     /**
      * Create a new Winston instance.
@@ -12,8 +10,8 @@ class Winston {
      * @param config - Driver configuration or channel name.
      * @param handlers - Winston transport handlers.
      */
-    constructor(config: Record<string, unknown> | string, handlers: unknown) {
-        this[kLogger] = this.createLogger(handlers);
+    constructor(config: Record<string, unknown> | string, handlers: WinstonTransport | WinstonTransport[]) {
+        this.#logger = this.createLogger(handlers);
     }
 
     /**
@@ -24,7 +22,7 @@ class Winston {
      * @param context - Additional contextual metadata.
      */
     public log(level: string, message: unknown, context?: unknown): void {
-        this[kLogger].log(level, message as any, context);
+        this.#logger.log(level, message as string, context);
     }
 
     /**
@@ -33,7 +31,7 @@ class Winston {
      * @param handlers - Transport handlers.
      * @returns Winston Logger instance.
      */
-    public createLogger(handlers: unknown): WinstonLogger {
+    public createLogger(handlers: WinstonTransport | WinstonTransport[]): WinstonLogger {
         return createLogger({
             levels: {
                 emerg: 0,
@@ -49,7 +47,7 @@ class Winston {
                 verbose: 10,
                 silly: 11
             },
-            transports: handlers as any
+            transports: handlers
         });
     }
 
@@ -59,7 +57,7 @@ class Winston {
      * @returns The underlying Winston logger instance.
      */
     public getHandler(): WinstonLogger {
-        return this[kLogger];
+        return this.#logger;
     }
 }
 

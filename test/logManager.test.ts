@@ -1,6 +1,7 @@
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
+import path from 'node:path';
+import fs from 'node:fs';
+import os from 'node:os';
+import { describe, test, expect, jest, beforeAll, afterAll } from '@jest/globals';
 import { format } from 'winston';
 
 import InvalidArgumentException from '../src/InvalidArgumentException';
@@ -22,9 +23,9 @@ describe('LogManager', () => {
         // Keep directory until process exit to avoid stream close race conditions
     });
 
-    function createMockContainer(configData: Record<string, any> = {}): any {
+    function createMockContainer(configData: Record<string, unknown> = {}): Record<string, unknown> & { make: jest.Mock; storagePath: jest.Mock } {
         return {
-            make: jest.fn((key: any, args: any) => {
+            make: jest.fn((key: string | ((...args: unknown[]) => unknown), args?: unknown) => {
                 if (key === 'config') return configData;
                 if (typeof key === 'function') return key(args);
                 return null;
@@ -128,7 +129,7 @@ describe('LogManager', () => {
     });
 
     test('creates custom driver via function or container', () => {
-        const customFactory = jest.fn((config) => {
+        const customFactory = jest.fn((config: any) => {
             return new Winston(config, [new transports.Console({ silent: true })]);
         });
 
@@ -146,12 +147,7 @@ describe('LogManager', () => {
                 }
             }
         });
-        container.make.mockImplementation((key: any) => {
-            if (key === 'config') return (container.make as any)._config;
-            if (key === 'customServiceFactory') return customFactory;
-            return null;
-        });
-        (container.make as any)._config = {
+        let customLoggingConfig: Record<string, unknown> = {
             logging: {
                 channels: {
                     custom_callable: {
@@ -165,6 +161,11 @@ describe('LogManager', () => {
                 }
             }
         };
+        container.make.mockImplementation((key: string) => {
+            if (key === 'config') return customLoggingConfig;
+            if (key === 'customServiceFactory') return customFactory;
+            return null;
+        });
 
         const manager = new LogManager(container);
         const c1 = manager.driver('custom_callable');
@@ -256,12 +257,7 @@ describe('LogManager', () => {
                 }
             }
         });
-        container.make.mockImplementation((key: any, args: any) => {
-            if (key === 'config') return (container.make as any)._config;
-            if (key === 'myCustomFormatter') return customFormatterInstance;
-            return null;
-        });
-        (container.make as any)._config = {
+        let formatterConfig: Record<string, unknown> = {
             logging: {
                 channels: {
                     custom_formatter: {
@@ -276,6 +272,11 @@ describe('LogManager', () => {
                 }
             }
         };
+        container.make.mockImplementation((key: string, _args?: unknown) => {
+            if (key === 'config') return formatterConfig;
+            if (key === 'myCustomFormatter') return customFormatterInstance;
+            return null;
+        });
 
         const manager = new LogManager(container);
         // Test channel() with default null parameter
