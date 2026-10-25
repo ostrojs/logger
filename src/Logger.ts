@@ -1,9 +1,5 @@
-const kLogger: unique symbol = Symbol('logger');
-const kConfig: unique symbol = Symbol('config');
-
 class Logger {
-    [kLogger]: any;
-    [kConfig]?: unknown;
+    #logger: any;
 
     /**
      * Create a new Logger instance.
@@ -12,7 +8,7 @@ class Logger {
      * @param config - Driver configuration or event dispatcher.
      */
     constructor(logger: any, config?: unknown) {
-        this[kLogger] = logger;
+        this.#logger = logger;
     }
 
     /**
@@ -125,7 +121,7 @@ class Logger {
      * @param context - Additional contextual data.
      */
     public writeLog(level: unknown, message: unknown, context: unknown): void {
-        this[kLogger].log(level, message, context);
+        this.#logger.log(level, message, context);
     }
 
     /**
@@ -134,7 +130,7 @@ class Logger {
      * @returns The underlying logger.
      */
     public getLogger(): any {
-        return this[kLogger];
+        return this.#logger;
     }
 }
 

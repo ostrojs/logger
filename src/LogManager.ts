@@ -4,9 +4,9 @@ import Logger from './Logger';
 import InvalidArgumentException from './InvalidArgumentException';
 import { Winston, transports, format } from './winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import fs from 'fs';
-import path from 'path';
-import { Console } from 'console';
+import fs from 'node:fs';
+import path from 'node:path';
+import { Console } from 'node:console';
 import { is_callable, collect } from '@ostro/support/function';
 
 class LogManager extends Manager {
@@ -168,7 +168,7 @@ class LogManager extends Manager {
      */
     public createConsoleDriver($config: Record<string, any>): Winston {
         return new Winston($config, [
-            this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() } as any), $config)
+            this.prepareHandler(new transports.Console({ format: format.colorize() }), $config)
         ]);
     }
 

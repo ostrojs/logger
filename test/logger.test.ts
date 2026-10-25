@@ -1,6 +1,7 @@
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
+import path from 'node:path';
+import fs from 'node:fs';
+import os from 'node:os';
+import { describe, test, expect, jest } from '@jest/globals';
 import { format } from 'winston';
 
 import InvalidArgumentException from '../src/InvalidArgumentException';
@@ -27,28 +28,30 @@ describe('LineFormatter', () => {
         const formatter = new LineFormatter();
         expect(formatter).toBeDefined();
 
-        const messageFormatFn = LineFormatter.prototype.messageFormat.call({} as any);
+        const messageFormatFn = (LineFormatter.prototype.messageFormat as unknown as () => {
+            transform: (info: Record<string | symbol, unknown>) => unknown;
+        }).call({});
         expect(typeof messageFormatFn.transform).toBe('function');
 
         // String message
-        const infoString: Record<string | symbol, any> = { level: 'info', message: 'User logged in', timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoString as any);
+        const infoString: Record<string | symbol, unknown> = { level: 'info', message: 'User logged in', timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoString);
         const symbolFormat = Object.getOwnPropertySymbols(infoString).find(s => s.toString().includes('message'))!;
         const formattedStr = infoString[symbolFormat];
         expect(formattedStr).toBe('[2026-09-06 00:00:00] [info] : User logged in\n');
 
         // Object message
-        const infoObj: Record<string | symbol, any> = { level: 'debug', message: { id: 1, active: true }, timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoObj as any);
+        const infoObj: Record<string | symbol, unknown> = { level: 'debug', message: { id: 1, active: true }, timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoObj);
         const formattedObj = infoObj[symbolFormat];
-        expect(formattedObj).toContain('{\n  "id": 1,\n  "active": true\n}');
+        expect(formattedObj as string).toContain('{\n  "id": 1,\n  "active": true\n}');
 
         // Error message
         const testErr = new Error('Database connection failed');
-        const infoErr: Record<string | symbol, any> = { level: 'error', message: testErr, timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoErr as any);
+        const infoErr: Record<string | symbol, unknown> = { level: 'error', message: testErr, timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoErr);
         const formattedErr = infoErr[symbolFormat];
-        expect(formattedErr).toContain('Error: Database connection failed');
+        expect(formattedErr as string).toContain('Error: Database connection failed');
     });
 
     test('constructor default config parameter', () => {
@@ -117,9 +120,9 @@ describe('Logger', () => {
 
 describe('LogServiceProvider', () => {
     test('registers logger singleton in application container', () => {
-        const singletons: Record<string, any> = {};
+        const singletons: Record<string, unknown> = {};
         const mockApp = {
-            singleton: jest.fn((name: string, factory: (app: any) => any) => {
+            singleton: jest.fn((name: string, factory: (app: unknown) => unknown) => {
                 singletons[name] = factory(mockApp);
             }),
             make: jest.fn().mockReturnValue({})
