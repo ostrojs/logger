@@ -3,14 +3,18 @@ import type { Logform } from 'winston';
 
 const { combine, timestamp, prettyPrint, printf } = format;
 
+interface Formatter extends Logform.Format {}
+
 class Formatter {
+    [key: string]: unknown;
+
     /**
      * Create a new Formatter instance.
      *
      * @param config - Configuration options.
      */
     constructor(config: Record<string, unknown> = {}) {
-        return this.combine(config) as unknown as Formatter;
+        return this.combine(config) as Formatter;
     }
 
     /**
