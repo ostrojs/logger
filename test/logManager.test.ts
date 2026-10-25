@@ -129,7 +129,7 @@ describe('LogManager', () => {
     });
 
     test('creates custom driver via function or container', () => {
-        const customFactory = jest.fn((config) => {
+        const customFactory = jest.fn((config: any) => {
             return new Winston(config, [new transports.Console({ silent: true })]);
         });
 
