@@ -1,6 +1,6 @@
 {
     "name": "@ostro/logger",
-    "version": "2.0.0-alpha.3",
+    "version": "2.0.0-alpha.4",
     "description": "Logger module for OstroJS",
     "main": "LogManager.js",
     "types": ".typed/LogManager.d.ts",

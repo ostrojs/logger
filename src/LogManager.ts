@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Console } from 'node:console';
 import { is_callable, collect } from '@ostro/support/function';
+import type { IApplication } from '@ostro/contracts/foundation/application';
 
 class LogManager extends Manager {
     /**
@@ -16,7 +17,7 @@ class LogManager extends Manager {
     public $type: string = 'logging';
 
     declare $drivers: Record<string, Logger>;
-    declare $container: any;
+    declare $container: IApplication;
 
     /**
      * Create a new stack log channel instance.
@@ -69,7 +70,7 @@ class LogManager extends Manager {
      * @returns Emergency Logger instance.
      */
     public createEmergencyLogger(): Logger {
-        const storagePath = typeof this.$container.storagePath === 'function'
+        const storagePath = this.$container?.storagePath
             ? this.$container.storagePath()
             : path.resolve('storage');
         return new Logger(
